@@ -1,0 +1,49 @@
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    
+    @IBOutlet weak var uploadPreviewImage: UIImageView!
+    
+    @IBAction func uploadImageFromSource(sender: AnyObject) {
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        imagePicker.allowsEditing = false
+        self.presentViewController(imagePicker, animated: true, completion: nil)
+
+    }
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        uploadPreviewImage.image = image
+         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    @IBAction func uploadButton(sender: AnyObject) {
+        
+        
+        
+        if uploadPreviewImage.image == nil {
+            //image is not included alert user
+            print("Image not uploaded")
+        }else {
+            
+            let NewEvent = PFObject(className: "NewEvent")
+            
+            //create an image data
+                    let imageData = UIImagePNGRepresentation(self.uploadPreviewImage.image!)
+                    //create a parse file to store in cloud
+            
+                    let parseImageFile = PFFile(name: "uploaded_image.png", data: imageData!)
+                    NewEvent["imageFile"] = parseImageFile
+                    NewEvent.saveInBackgroundWithBlock({
+                        (success: Bool, error: NSError?) -> Void in
+            })
+        }
+        
+            
+            
+                
+        
+        
+        
+    }
